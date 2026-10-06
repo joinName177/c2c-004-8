@@ -55,4 +55,20 @@ describe('Luggage planner App', () => {
     await wrapper.get('[data-testid="print-button"]').trigger('click');
     expect(getPrintCount()).toBe(1);
   });
+
+  it('runs an alternative-group trial and confirms the recommendation', async () => {
+    const { wrapper } = render();
+    await wrapper.get('[aria-label="组合名称"]').setValue('随身二选一');
+    await wrapper.get('[data-testid="group-creator"]').trigger('submit');
+    const select = wrapper.get('select[aria-label="向随身二选一添加物品"]');
+    await select.setValue('camera');
+    await wrapper.get('select[aria-label="向随身二选一添加物品"]').setValue('book');
+    await wrapper.get('[data-testid="run-trial"]').trigger('click');
+    const result = wrapper.get('[data-testid="trial-result"]');
+    expect(result.text()).toContain('推荐方案');
+    expect(result.text()).toContain('微单相机');
+    await wrapper.get('[data-testid="confirm-trial"]').trigger('click');
+    expect(wrapper.text()).toContain('已采用');
+    expect(wrapper.text()).not.toContain('未满足的必带组');
+  });
 });
