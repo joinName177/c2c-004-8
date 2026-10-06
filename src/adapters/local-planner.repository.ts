@@ -1,4 +1,5 @@
 import { createSampleSnapshot } from '../core/sample-data';
+import { normalizeSnapshot } from '../core/snapshot';
 import type { PackingSnapshot } from '../core/models';
 import type { LoadResult, PlannerRepository } from '../ports/planner-repository.port';
 
@@ -11,7 +12,7 @@ export class LocalPlannerRepository implements PlannerRepository {
     const raw = this.storage.getItem(KEY);
     if (!raw) return { value: createSampleSnapshot() };
     try {
-      return { value: JSON.parse(raw) as PackingSnapshot };
+      return { value: normalizeSnapshot(JSON.parse(raw) as PackingSnapshot) };
     } catch {
       return { value: createSampleSnapshot(), warning: '本地数据无法读取，已恢复示例。' };
     }

@@ -27,8 +27,19 @@ describe('Luggage planner App', () => {
     const { wrapper } = render();
     expect(wrapper.text()).toContain('行李箱空间规划师');
     expect(wrapper.text()).toContain('轻薄外套');
+    expect(wrapper.text()).toContain('替代组合试算');
+    expect(wrapper.text()).toContain('外套二选一');
     await wrapper.get('[aria-label="行李箱长度"]').setValue('0');
     expect(wrapper.text()).toContain('行李箱长度必须大于 0');
+  });
+
+  it('runs an alternative trial and confirms the recommendation', async () => {
+    const { wrapper } = render();
+    await wrapper.get('[data-testid="run-trial"]').trigger('click');
+    expect(wrapper.get('[data-testid="trial-result"]').text()).toContain('推荐');
+    expect(wrapper.get('[data-testid="trial-result"]').text()).toContain('放弃原因');
+    await wrapper.get('[data-testid="confirm-trial"]').trigger('click');
+    expect(wrapper.text()).toContain('已保存分组与本次选择');
   });
 
   it('adds and deletes an item', async () => {
